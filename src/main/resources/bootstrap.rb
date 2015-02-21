@@ -12,7 +12,7 @@ def render(template, variables)
 
     def partial(partial_name, options={})
       new_variables = marshal_dump.merge(options[:locals] || {})
-      Java::test::templater::ERB.render(partial_name, new_variables)
+      Java::com::itl::erb::ERB.render(partial_name, new_variables)
     end
     binding
   end

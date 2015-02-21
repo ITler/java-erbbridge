@@ -21,28 +21,36 @@ import com.itl.erb.ERB;
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class ERBTest {
 
-	private static Map<String, Object> variables;
-
 	private static Map<String, String> testTemplates;
+
+	private static Map<String, Object> variables;
 
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
-		variables = new HashMap<>();
-		variables.put("@user", "JUnit");
+		assignTemplatesAndDesiredResults();
+		assignTemplateVariables();
+	}
 
+	@AfterClass
+	public static void tearDownAfterClass() throws Exception {
+	}
+
+	private static void assignTemplatesAndDesiredResults() {
 		testTemplates = new HashMap<>();
 		testTemplates.put("plain_template", "erbtest.erb");
 		testTemplates.put("plain_result", "User:JUnit");
 
 		testTemplates.put("nested_template", "erbtestnested.erb");
-		testTemplates.put(
-				"nested_result",
-				String.format("%s;Nested:NestedTest",
-						testTemplates.get("plain_result")));
+		testTemplates.put("nested_result",
+				String.format("%s;Nested:NestedTest%s",
+						testTemplates.get("plain_result"), 
+						"\n123")); // loop test
 	}
 
-	@AfterClass
-	public static void tearDownAfterClass() throws Exception {
+	private static void assignTemplateVariables() {
+		variables = new HashMap<>();
+		variables.put("@user", "JUnit");
+		variables.put("@loopcount", 3);
 	}
 
 	@Before
@@ -64,7 +72,8 @@ public class ERBTest {
 	public void testRenderTemplate() {
 		try {
 			assertEquals(testTemplates.get("plain_result"),
-					ERB.render(testTemplates.get("plain_template"), variables));
+					ERB.render(testTemplates.get("plain_template"), variables)
+							.trim());
 		} catch (Exception e) {
 			e.printStackTrace();
 			fail("Exception while testing");
@@ -75,7 +84,8 @@ public class ERBTest {
 	public void testRenderTemplateWithNestedTemplate() {
 		try {
 			assertEquals(testTemplates.get("nested_result"),
-					ERB.render(testTemplates.get("nested_template"), variables));
+					ERB.render(testTemplates.get("nested_template"), variables)
+							.trim());
 		} catch (Exception e) {
 			e.printStackTrace();
 			fail("Exception while testing");

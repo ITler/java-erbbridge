@@ -22,6 +22,6 @@
 			<attribute name="maven.pomderived" value="true"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="lib" path="templates"/>
+	<classpathentry kind="lib" path="src/main/resources"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>
